@@ -7,6 +7,7 @@ import { Navbar } from './components/common/Navbar';
 import { Hero } from './components/landing/Hero';
 import { AboutUs } from './components/landing/AboutUs';
 import { DoctorsRoster } from './components/landing/DoctorsRoster';
+import { MedicProBento } from './components/landing/MedicProBento';
 import { DepartmentsGrid } from './components/landing/DepartmentsGrid';
 import { LiveStats } from './components/landing/LiveStats';
 import { FeaturesGrid } from './components/landing/FeaturesGrid';
@@ -61,6 +62,7 @@ const AppContent: React.FC = () => {
             />
             <AboutUs />
             <DoctorsRoster />
+            <MedicProBento />
             <DepartmentsGrid />
             <LiveStats />
             <FeaturesGrid />
