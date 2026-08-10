@@ -26,19 +26,27 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const res = await fetch('/api/queue/live');
       if (res.ok) {
         const data = await res.json();
-        setLiveQueue(data.tickets || []);
+        if (data.tickets) {
+          setLiveQueue(data.tickets);
+        }
       }
     } catch (e) {
-      console.error('Failed to refresh queue:', e);
+      console.error('Failed to refresh queue via REST API:', e);
     }
   };
 
   useEffect(() => {
     refreshQueue();
 
+    // Setup HTTP REST polling interval fallback (every 4 seconds)
+    const pollInterval = setInterval(() => {
+      refreshQueue();
+    }, 4000);
+
+    // Try Socket.IO connection
     const socketClient = io(window.location.origin, {
       transports: ['websocket', 'polling'],
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 3,
     });
 
     socketClient.on('connect', () => {
@@ -50,7 +58,9 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     });
 
     socketClient.on('queue:updated', (data: QueueTicket[]) => {
-      setLiveQueue(data);
+      if (data && Array.isArray(data)) {
+        setLiveQueue(data);
+      }
     });
 
     socketClient.on('ticket:called', (data: QueueTicket) => {
@@ -64,6 +74,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setSocket(socketClient);
 
     return () => {
+      clearInterval(pollInterval);
       socketClient.disconnect();
     };
   }, [language]);

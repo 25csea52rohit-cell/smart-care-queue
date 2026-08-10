@@ -8,3 +8,6 @@ backend/prisma/dev.db-journal
 backend/dist
 frontend/dist
 .vercel
+
+.vercel
+.env*
