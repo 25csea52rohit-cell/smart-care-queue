@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { fetchApi } from '../../services/api';
 import { useSocket } from '../../context/SocketContext';
-import { QueueCategory } from '../../types';
-import { X, Ticket, AlertCircle, HeartPulse, Stethoscope, Sparkles } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { X, Ticket, HeartPulse, Sparkles } from 'lucide-react';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface BookingModalProps {
 
 export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
   const { refreshQueue } = useSocket();
+  const { user } = useAuth();
   const [symptoms, setSymptoms] = useState('');
   const [patientAge, setPatientAge] = useState('34');
   const [patientName, setPatientName] = useState('');
@@ -30,12 +31,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
         body: JSON.stringify({
           symptoms,
           patientAge,
-          patientNameOverride: patientName || undefined,
+          patientNameOverride: patientName || user?.name || 'John Doe',
           categoryOverride: categoryOverride === 'AUTO' ? undefined : categoryOverride,
+          patientId: user?.id || 'patient-1',
         }),
       });
 
-      refreshQueue();
+      await refreshQueue();
+      setSymptoms('');
       onClose();
     } catch (err) {
       console.error('Failed to book appointment:', err);
@@ -131,7 +134,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
           <div className="p-3 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 text-[11px] text-teal-800 dark:text-teal-300 flex items-start gap-2">
             <HeartPulse className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />
             <span>
-              The backend smart triage model will automatically compute urgency score, assign the matching available room (101-410), and issue a live ticket.
+              The smart triage model will calculate urgency score, assign room (101-410), and issue your live ticket.
             </span>
           </div>
 

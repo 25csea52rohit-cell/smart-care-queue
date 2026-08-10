@@ -41,7 +41,8 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       body.symptoms || 'General consultation',
       body.patientAge ? parseInt(body.patientAge) : undefined,
       body.patientNameOverride,
-      body.categoryOverride
+      body.categoryOverride,
+      body.patientId || 'patient-1'
     );
     return {
       message: 'Ticket generated',

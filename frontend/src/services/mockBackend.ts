@@ -1,6 +1,8 @@
 import { QueueTicket, QueueCategory, AnalyticsData } from '../types';
 
-let mockTickets: QueueTicket[] = [
+const STORAGE_KEY = 'medqueue_demo_tickets';
+
+const initialTickets: QueueTicket[] = [
   {
     id: 't-1',
     ticketNumber: 'E-001',
@@ -75,12 +77,27 @@ let mockTickets: QueueTicket[] = [
   },
 ];
 
-let dailyCategoryCounts = {
-  EMERGENCY: 1,
-  URGENT: 1,
-  PRIORITY: 1,
-  GENERAL: 1,
-};
+function loadTickets(): QueueTicket[] {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    // fallback
+  }
+  return initialTickets;
+}
+
+function saveTickets(tickets: QueueTicket[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets));
+  } catch (e) {
+    // ignore
+  }
+}
+
+let mockTickets: QueueTicket[] = loadTickets();
 
 const categoryRooms = {
   EMERGENCY: { room: '101', wing: 'Emergency Wing', floor: 1 },
@@ -91,10 +108,13 @@ const categoryRooms = {
 
 export const mockBackendService = {
   getLiveQueue(): QueueTicket[] {
+    mockTickets = loadTickets();
     return [...mockTickets].sort((a, b) => b.priorityScore - a.priorityScore);
   },
 
-  bookTicket(symptoms: string, age?: number, nameOverride?: string, categoryOverride?: string): QueueTicket {
+  bookTicket(symptoms: string, age?: number, nameOverride?: string, categoryOverride?: string, patientId?: string): QueueTicket {
+    mockTickets = loadTickets();
+
     let category: QueueCategory = 'GENERAL';
     let priorityScore = 50;
 
@@ -102,10 +122,10 @@ export const mockBackendService = {
     if (categoryOverride && ['EMERGENCY', 'URGENT', 'PRIORITY', 'GENERAL'].includes(categoryOverride)) {
       category = categoryOverride as QueueCategory;
       priorityScore = category === 'EMERGENCY' ? 1000 : category === 'URGENT' ? 500 : category === 'PRIORITY' ? 200 : 50;
-    } else if (lower.includes('heart') || lower.includes('bleed') || lower.includes('chest pain') || lower.includes('stroke') || lower.includes('unconscious')) {
+    } else if (lower.includes('heart') || lower.includes('bleed') || lower.includes('chest') || lower.includes('stroke') || lower.includes('unconscious') || lower.includes('emergency')) {
       category = 'EMERGENCY';
       priorityScore = 1000;
-    } else if (lower.includes('fever') || lower.includes('severe pain') || lower.includes('pregnant') || (age && age >= 70)) {
+    } else if (lower.includes('fever') || lower.includes('severe') || lower.includes('pain') || lower.includes('pregnant') || (age && age >= 70)) {
       category = 'URGENT';
       priorityScore = 500;
     } else if (lower.includes('surgery') || lower.includes('disabled') || lower.includes('chronic')) {
@@ -113,9 +133,9 @@ export const mockBackendService = {
       priorityScore = 200;
     }
 
-    dailyCategoryCounts[category] += 1;
+    const count = mockTickets.filter(t => t.category === category).length + 1;
     const prefix = category.charAt(0);
-    const seq = dailyCategoryCounts[category].toString().padStart(3, '0');
+    const seq = count.toString().padStart(3, '0');
     const ticketNumber = `${prefix}-${seq}`;
 
     const roomDetails = categoryRooms[category];
@@ -123,7 +143,7 @@ export const mockBackendService = {
     const newTicket: QueueTicket = {
       id: `t-${Date.now()}`,
       ticketNumber,
-      patientId: 'patient-1',
+      patientId: patientId || 'patient-1',
       patientName: nameOverride || 'John Doe',
       patientAge: age || 34,
       category,
@@ -141,27 +161,33 @@ export const mockBackendService = {
 
     mockTickets.unshift(newTicket);
     mockTickets.sort((a, b) => b.priorityScore - a.priorityScore);
+    saveTickets(mockTickets);
 
     return newTicket;
   },
 
   callTicket(ticketId: string): QueueTicket | null {
+    mockTickets = loadTickets();
     const t = mockTickets.find(x => x.id === ticketId);
     if (t) {
       t.status = 'CALLED';
+      saveTickets(mockTickets);
     }
     return t || null;
   },
 
   completeConsultation(ticketId: string): QueueTicket | null {
+    mockTickets = loadTickets();
     const t = mockTickets.find(x => x.id === ticketId);
     if (t) {
       t.status = 'COMPLETED';
+      saveTickets(mockTickets);
     }
     return t || null;
   },
 
   getAnalytics(): AnalyticsData {
+    mockTickets = loadTickets();
     return {
       patientsServedToday: mockTickets.filter(t => t.status === 'COMPLETED').length + 42,
       avgWaitTimeMinutes: 12,
@@ -179,10 +205,10 @@ export const mockBackendService = {
         { hour: '15:00', count: 31 },
       ],
       categoryBreakdown: [
-        { category: 'EMERGENCY', count: 7 },
-        { category: 'URGENT', count: 12 },
-        { category: 'PRIORITY', count: 9 },
-        { category: 'GENERAL', count: 18 },
+        { category: 'EMERGENCY', count: mockTickets.filter(t => t.category === 'EMERGENCY').length },
+        { category: 'URGENT', count: mockTickets.filter(t => t.category === 'URGENT').length },
+        { category: 'PRIORITY', count: mockTickets.filter(t => t.category === 'PRIORITY').length },
+        { category: 'GENERAL', count: mockTickets.filter(t => t.category === 'GENERAL').length },
       ],
       departmentWaitTimes: [
         { department: 'Emergency', avgWait: 2 },
