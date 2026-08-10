@@ -5,6 +5,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { Navbar } from './components/common/Navbar';
 import { Hero } from './components/landing/Hero';
+import { AboutUs } from './components/landing/AboutUs';
+import { DepartmentsGrid } from './components/landing/DepartmentsGrid';
 import { LiveStats } from './components/landing/LiveStats';
 import { FeaturesGrid } from './components/landing/FeaturesGrid';
 import { HowItWorks } from './components/landing/HowItWorks';
@@ -52,10 +54,12 @@ const AppContent: React.FC = () => {
             <Hero
               onBookClick={() => setIsBookingModalOpen(true)}
               onExploreClick={() => {
-                const featEl = document.getElementById('features');
-                featEl?.scrollIntoView({ behavior: 'smooth' });
+                const aboutEl = document.getElementById('about');
+                aboutEl?.scrollIntoView({ behavior: 'smooth' });
               }}
             />
+            <AboutUs />
+            <DepartmentsGrid />
             <LiveStats />
             <FeaturesGrid />
             <HowItWorks />
