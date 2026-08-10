@@ -57,10 +57,10 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
     <div className="glass-card-pro rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-6 shadow-xl">
       
       {/* Map Top Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-950 dark:text-sky-400">
+            <div className="p-2 rounded-xl bg-sky-600 text-white shadow-md">
               <Navigation className="w-5 h-5 animate-pulse" />
             </div>
             <div>
@@ -76,16 +76,16 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
 
         {/* Assigned Room Badge */}
         <div className="px-4 py-2 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 text-white shadow-md flex items-center gap-2 self-start sm:self-auto">
-          <MapPin className="w-4 h-4" />
+          <MapPin className="w-4 h-4 text-white" />
           <div className="text-xs">
-            <span className="opacity-80 block text-[10px]">Your Destination</span>
-            <span className="font-extrabold">Room {assignedRoomNumber} ({assignedWing})</span>
+            <span className="opacity-90 block text-[10px] font-semibold text-white">Your Destination</span>
+            <span className="font-extrabold text-white">Room {assignedRoomNumber} ({assignedWing})</span>
           </div>
         </div>
       </div>
 
-      {/* Floor Selection Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+      {/* Floor Selection Tabs - High Contrast Fix */}
+      <div className="flex flex-wrap items-center justify-between gap-2 p-2 rounded-2xl bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
         {[
           { floor: 1, label: 'Floor 1 (Emergency)' },
           { floor: 2, label: 'Floor 2 (Urgent)' },
@@ -98,14 +98,14 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
             <button
               key={tab.floor}
               onClick={() => setSelectedFloor(tab.floor)}
-              className={`flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-xl transition-all ${
+              className={`flex-1 min-w-[120px] py-2.5 px-3 text-xs font-black rounded-xl transition-all ${
                 isActive
-                  ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20 scale-102'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30 scale-102 border border-sky-500'
+                  : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'
               }`}
             >
               {tab.label}
-              {isAssignedFloor && <span className="ml-1 text-[10px] bg-white/30 text-white px-1.5 py-0.5 rounded-full font-black">★ Your Floor</span>}
+              {isAssignedFloor && <span className="ml-1.5 text-[10px] bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full font-black">★ Your Floor</span>}
             </button>
           );
         })}
@@ -118,7 +118,7 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
           {/* Grid Background */}
           <defs>
             <pattern id="arch-grid" width="30" height="30" patternUnits="userSpaceOnUse">
-              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(56, 189, 248, 0.08)" strokeWidth="1" />
+              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(56, 189, 248, 0.12)" strokeWidth="1" />
             </pattern>
             <linearGradient id="route-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
               <stop offset="0%" stopColor="#38bdf8" />
@@ -128,20 +128,20 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
           <rect width="100%" height="100%" fill="url(#arch-grid)" />
 
           {/* Central Corridor Pathway */}
-          <rect x="220" y="40" width="80" height="260" rx="8" fill="rgba(30, 41, 59, 0.6)" stroke="#334155" strokeWidth="1.5" strokeDasharray="4 4" />
-          <text x="260" y="170" fill="#64748b" fontSize="10" fontWeight="bold" textAnchor="middle" transform="rotate(-90 260 170)">
+          <rect x="220" y="40" width="80" height="260" rx="8" fill="rgba(30, 41, 59, 0.8)" stroke="#475569" strokeWidth="1.5" strokeDasharray="4 4" />
+          <text x="260" y="170" fill="#94a3b8" fontSize="10" fontWeight="bold" textAnchor="middle" transform="rotate(-90 260 170)">
             MAIN CLINICAL CORRIDOR
           </text>
 
           {/* Main Entrance & Waiting Lounge (Bottom Zone) */}
           <g transform="translate(140, 310)">
-            <rect width="240" height="50" rx="12" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" strokeWidth="2" />
+            <rect width="240" height="50" rx="12" fill="rgba(16, 185, 129, 0.3)" stroke="#10b981" strokeWidth="2" />
             <circle cx="20" cy="25" r="8" fill="#10b981" className="animate-ping" />
             <circle cx="20" cy="25" r="5" fill="#10b981" />
-            <text x="40" y="24" fill="#10b981" fontSize="11" fontWeight="bold">
+            <text x="40" y="24" fill="#34d399" fontSize="11" fontWeight="black">
               START: MAIN ENTRANCE & WAITING LOUNGE
             </text>
-            <text x="40" y="38" fill="#a7f3d0" fontSize="9" fontWeight="medium">
+            <text x="40" y="38" fill="#e2e8f0" fontSize="9" fontWeight="bold">
               You are here • Reception Kiosk Terminal
             </text>
           </g>
@@ -172,7 +172,7 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
                   width="100"
                   height="60"
                   rx="12"
-                  fill={isDestination ? 'rgba(16, 185, 129, 0.3)' : 'rgba(30, 41, 59, 0.8)'}
+                  fill={isDestination ? 'rgba(16, 185, 129, 0.4)' : 'rgba(30, 41, 59, 0.9)'}
                   stroke={isDestination ? '#10b981' : room.color}
                   strokeWidth={isDestination ? '3' : '1.5'}
                 />
@@ -186,7 +186,7 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
                 </text>
 
                 {/* Room Name */}
-                <text x="50" y="42" fill={isDestination ? '#a7f3d0' : '#94a3b8'} fontSize="9" fontWeight="bold" textAnchor="middle">
+                <text x="50" y="42" fill={isDestination ? '#a7f3d0' : '#cbd5e1'} fontSize="9" fontWeight="bold" textAnchor="middle">
                   {room.name}
                 </text>
 
@@ -204,42 +204,42 @@ export const HospitalFloorMap: React.FC<HospitalFloorMapProps> = ({
         </svg>
 
         {/* Floating Legend */}
-        <div className="absolute top-3 left-3 px-3 py-1.5 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-800 flex items-center gap-3 text-[10px] text-slate-300">
-          <span className="flex items-center gap-1 font-bold"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Start Point</span>
-          <span className="flex items-center gap-1 font-bold"><span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" /> Your Destination</span>
-          <span className="flex items-center gap-1 text-emerald-400 font-bold"><Footprints className="w-3 h-3" /> Turn-by-Turn Route</span>
+        <div className="absolute top-3 left-3 px-3 py-1.5 rounded-xl bg-slate-900/95 backdrop-blur-md border border-slate-700 flex items-center gap-3 text-[10px] text-white font-bold">
+          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Start Point</span>
+          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" /> Destination</span>
+          <span className="flex items-center gap-1 text-emerald-400 font-bold"><Footprints className="w-3 h-3" /> Directional Route</span>
         </div>
       </div>
 
-      {/* Step-by-step Turn-by-Turn Directions Box */}
-      <div className="p-4 rounded-2xl bg-sky-50 dark:bg-slate-900/80 border border-sky-100 dark:border-slate-800 space-y-3">
-        <div className="flex items-center gap-2 text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider">
+      {/* Turn-by-Turn Navigation Instructions Card - High Contrast Fix */}
+      <div className="p-5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 space-y-3">
+        <div className="flex items-center gap-2 text-xs font-black text-sky-700 dark:text-sky-300 uppercase tracking-wider">
           <Compass className="w-4 h-4 text-sky-600" />
           <span>Turn-by-Turn Navigation Instructions</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-2.5">
-            <span className="w-5 h-5 rounded-full bg-sky-600 text-white font-mono font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">1</span>
+          <div className="p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-start gap-2.5 shadow-sm">
+            <span className="w-5 h-5 rounded-full bg-sky-600 text-white font-mono font-black flex items-center justify-center text-[10px] shrink-0 mt-0.5">1</span>
             <div>
-              <span className="font-bold text-slate-900 dark:text-white block">Start at Waiting Lounge</span>
-              <span className="text-slate-500 text-[11px]">Ground Floor Entrance Kiosk</span>
+              <span className="font-extrabold text-slate-900 dark:text-white block">Start at Waiting Lounge</span>
+              <span className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Ground Floor Entrance Kiosk</span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-2.5">
-            <span className="w-5 h-5 rounded-full bg-sky-600 text-white font-mono font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">2</span>
+          <div className="p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-start gap-2.5 shadow-sm">
+            <span className="w-5 h-5 rounded-full bg-sky-600 text-white font-mono font-black flex items-center justify-center text-[10px] shrink-0 mt-0.5">2</span>
             <div>
-              <span className="font-bold text-slate-900 dark:text-white block">Take Elevator / Stairs</span>
-              <span className="text-slate-500 text-[11px]">Head to {assignedWing} ({selectedFloor}F)</span>
+              <span className="font-extrabold text-slate-900 dark:text-white block">Take Elevator / Stairs</span>
+              <span className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Head to {assignedWing} ({selectedFloor}F)</span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-start gap-2.5">
-            <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-mono font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">3</span>
+          <div className="p-3.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-700 flex items-start gap-2.5 shadow-sm">
+            <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-mono font-black flex items-center justify-center text-[10px] shrink-0 mt-0.5">3</span>
             <div>
-              <span className="font-bold text-emerald-900 dark:text-emerald-300 block">Arrive at Room {assignedRoomNumber}</span>
-              <span className="text-emerald-700 dark:text-emerald-400 text-[11px]">Follow glowing green corridor line</span>
+              <span className="font-extrabold text-emerald-950 dark:text-emerald-200 block">Arrive at Room {assignedRoomNumber}</span>
+              <span className="text-emerald-800 dark:text-emerald-300 text-[11px] font-bold">Follow glowing green corridor line</span>
             </div>
           </div>
         </div>
