@@ -23,13 +23,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookingModal, activeView, 
     ADMIN: <ShieldAlert className="w-3.5 h-3.5" />,
   };
 
+  const scrollToSection = (id: string) => {
+    if (activeView !== 'landing') {
+      setActiveView('landing');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const el = document.getElementById(id);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
           {/* Logo & Brand */}
-          <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => setActiveView('landing')}>
+          <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => scrollToSection('hero')}>
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-blue-700 flex items-center justify-center text-white shadow-md shadow-sky-600/20">
               <Shield className="w-6 h-6 text-white" />
             </div>
@@ -43,23 +56,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookingModal, activeView, 
             </div>
           </div>
 
-          {/* Center Navigation Links */}
+          {/* Center Navigation Links with Smooth Scrolling */}
           <nav className="hidden xl:flex items-center gap-7 text-xs font-extrabold tracking-wide text-slate-700 dark:text-slate-200">
-            <button onClick={() => setActiveView('landing')} className="hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <button onClick={() => scrollToSection('hero')} className="hover:text-sky-600 dark:hover:text-sky-400 transition">
               Home
             </button>
-            <a href="#about" className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
+            <button onClick={() => scrollToSection('about')} className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
               About Us
-            </a>
-            <a href="#departments" className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
+            </button>
+            <button onClick={() => scrollToSection('departments')} className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
               Find Doctor
-            </a>
-            <a href="#features" className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
+            </button>
+            <button onClick={() => scrollToSection('features')} className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
               Features
-            </a>
-            <a href="#faq" className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
+            </button>
+            <button onClick={() => scrollToSection('faq')} className="hover:text-sky-600 dark:hover:text-sky-400 transition whitespace-nowrap">
               Contact
-            </a>
+            </button>
           </nav>
 
           {/* Role Switcher Demo Pills */}

@@ -41,7 +41,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookClick, onExploreClick }) => {
   };
 
   return (
-    <section className="relative overflow-hidden hero-gradient dark:hero-gradient-dark text-white py-16 lg:py-24">
+    <section id="hero" className="relative overflow-hidden hero-gradient dark:hero-gradient-dark text-white py-16 lg:py-24">
       {/* Dynamic Animated Glow Orbs */}
       <div className="absolute top-[-100px] right-[-100px] w-[600px] h-[600px] bg-sky-400/25 rounded-full blur-[140px] animate-pulse-glow pointer-events-none" />
       <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[140px] animate-pulse-glow pointer-events-none" />
