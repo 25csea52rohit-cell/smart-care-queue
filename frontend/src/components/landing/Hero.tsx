@@ -41,11 +41,41 @@ export const Hero: React.FC<HeroProps> = ({ onBookClick, onExploreClick }) => {
   };
 
   return (
-    <section id="hero" className="relative overflow-hidden hero-gradient dark:hero-gradient-dark text-white py-16 lg:py-20">
+    <section id="hero" className="relative overflow-hidden hero-gradient dark:hero-gradient-dark text-white py-16 lg:py-24">
       
-      {/* Dynamic Animated Glow Orbs */}
-      <div className="absolute top-[-100px] right-[-100px] w-[600px] h-[600px] bg-sky-400/25 rounded-full blur-[140px] animate-pulse-glow pointer-events-none" />
-      <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[140px] animate-pulse-glow pointer-events-none" />
+      {/* Big Doctor Image Placed in the Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-30 dark:opacity-25 mix-blend-screen overflow-hidden">
+        <img
+          src="/images/hero-doctor.png"
+          alt="ProHealth Big Doctor Background"
+          className="w-full h-full object-cover object-top scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/50 to-transparent" />
+      </div>
+
+      {/* Floating Glowing Bubble Effects near the Doctor */}
+      <div className="absolute top-10 right-20 w-32 h-32 rounded-full bg-sky-400/20 blur-xl animate-float pointer-events-none" />
+      <div className="absolute bottom-20 right-1/3 w-48 h-48 rounded-full bg-blue-500/25 blur-2xl animate-pulse-glow pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-24 h-24 rounded-full bg-cyan-300/30 blur-lg animate-float-reverse pointer-events-none" />
+
+      {/* Floating Glowing Bubble Chips (Visual Orbs near Doctor) */}
+      <motion.div
+        animate={{ y: [0, -12, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-24 right-1/4 hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel-hero border border-white/30 text-[11px] font-bold text-sky-200 shadow-xl pointer-events-none z-10"
+      >
+        <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping" />
+        <span>24/7 AI Triage Active</span>
+      </motion.div>
+
+      <motion.div
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute bottom-32 right-12 hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel-hero border border-white/30 text-[11px] font-bold text-emerald-300 shadow-xl pointer-events-none z-10"
+      >
+        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+        <span>Board Certified Specialists</span>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -56,7 +86,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookClick, onExploreClick }) => {
         >
           
           {/* Left Column Text & Action Buttons */}
-          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
             {/* Floating Badge Pill */}
             <motion.div variants={itemVariants} className="inline-block">
@@ -87,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookClick, onExploreClick }) => {
             </motion.p>
 
             {/* Action Buttons with Spring Hover Effects */}
-            <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-2">
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-3">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
                 whileTap={{ scale: 0.96 }}
@@ -113,62 +143,91 @@ export const Hero: React.FC<HeroProps> = ({ onBookClick, onExploreClick }) => {
 
           </div>
 
-          {/* Right Column: Prominent Doctor Image Card & Live Queue Feed */}
+          {/* Right Column: Floating Interactive Live Feed Widget */}
           <motion.div
             variants={itemVariants}
-            className="lg:col-span-6 flex flex-col items-center justify-center relative"
+            className="lg:col-span-5 animate-float"
           >
-            {/* Doctor Image Card Container */}
-            <div className="relative w-full max-w-md">
-              
-              {/* Doctor Cutout Image Frame */}
-              <div className="relative rounded-3xl overflow-hidden glass-panel-hero border-2 border-white/30 shadow-2xl bg-gradient-to-b from-sky-500/20 to-blue-900/40">
-                <img
-                  src="/images/hero-doctor-cutout.png"
-                  alt="Senior Physician"
-                  className="w-full h-[460px] object-cover object-top hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent pointer-events-none" />
-
-                {/* Floating Doctor Info Badge */}
-                <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl glass-panel-hero border border-white/30 flex items-center justify-between text-white">
-                  <div>
-                    <span className="text-[10px] font-extrabold text-sky-300 uppercase tracking-widest block">
-                      CHIEF CLINICAL OFFICER
-                    </span>
-                    <h3 className="text-base font-black text-white">Dr. Sarah Jenkins</h3>
-                    <span className="text-xs text-slate-200">Room 101 • Emergency & Trauma</span>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-[10px] font-black bg-emerald-400 text-slate-900 uppercase">
-                    On Duty
+            <motion.div
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="glass-panel-hero rounded-3xl p-6 shadow-2xl space-y-4 border border-white/30 relative"
+            >
+              <div className="flex items-center justify-between border-b border-white/20 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
+                    Live Room & Queue Feed
                   </span>
                 </div>
+                <span className="text-[10px] text-slate-300 font-mono font-bold">REALTIME SOCKET SYNC</span>
               </div>
 
-              {/* Floating Live Queue Ticket Badge */}
+              {/* Serving Ticket Card */}
               <motion.div
-                whileHover={{ scale: 1.03 }}
-                className="absolute top-4 -right-4 hidden sm:block w-64 p-4 rounded-2xl glass-panel-hero border border-white/40 shadow-2xl backdrop-blur-xl text-white space-y-2"
+                whileHover={{ scale: 1.02 }}
+                className="p-5 rounded-2xl bg-white text-slate-900 shadow-2xl space-y-3 cursor-pointer"
               >
-                <div className="flex justify-between items-center border-b border-white/20 pb-2 text-[10px] font-mono">
-                  <span className="text-sky-300 font-bold">LIVE QUEUE</span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-400 text-slate-900 font-extrabold">SERVED</span>
-                </div>
-                <div className="flex justify-between items-end">
+                <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-[10px] text-slate-300 block">Now Serving</span>
-                    <span className="text-2xl font-black text-white">{activeTicket.ticketNumber}</span>
+                    <span className="text-[11px] font-bold text-sky-600 uppercase tracking-widest block">
+                      Now Serving Ticket
+                    </span>
+                    <h3 className="text-4xl font-black tracking-tight text-slate-900 mt-0.5">
+                      {activeTicket.ticketNumber || 'E-001'}
+                    </h3>
                   </div>
-                  <span className="text-xs font-bold text-sky-300">Room {activeTicket.room?.number || '101'}</span>
+                  <span className="px-3 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-700 animate-pulse">
+                    {activeTicket.category || 'EMERGENCY'}
+                  </span>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-slate-400 block font-medium">Physician</span>
+                    <span className="font-bold text-slate-900 block">Dr. Sarah Jenkins</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block font-medium">Room Location</span>
+                    <span className="font-bold text-sky-600 block">Room {activeTicket.room?.number || '101'} (Emergency)</span>
+                  </div>
                 </div>
               </motion.div>
 
-            </div>
+              {/* Queue List Preview */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold text-sky-200 uppercase tracking-wider block">
+                  Upcoming Queue (Live Triage Sort)
+                </span>
+                {[
+                  { num: 'U-001', name: 'Emily Watson', wait: '8 min', room: '201' },
+                  { num: 'P-001', name: 'Michael Chang', wait: '18 min', room: '301' },
+                  { num: 'G-001', name: 'Sophia Martinez', wait: '32 min', room: '402' },
+                ].map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    whileHover={{ x: 6, backgroundColor: 'rgba(255,255,255,0.2)' }}
+                    className="flex items-center justify-between p-3 rounded-xl bg-white/10 backdrop-blur-md text-xs font-semibold text-white border border-white/15 cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sky-300 font-bold">{item.num}</span>
+                      <span>{item.name}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-slate-300 flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-sky-300" /> {item.wait}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-white/20 font-bold">R-{item.room}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+            </motion.div>
           </motion.div>
 
         </motion.div>
 
-        {/* Bottom Frosted Glass Stats Strip */}
+        {/* Bottom Frosted Glass Stats Strip with Hover Elevation */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
