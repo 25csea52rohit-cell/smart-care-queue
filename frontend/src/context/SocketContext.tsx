@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { QueueTicket } from '../types';
+import { fetchApi } from '../services/api';
 import { announceQueueCall } from '../utils/voiceAnnouncer';
 import { useLanguage } from './LanguageContext';
 
@@ -23,59 +24,62 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const refreshQueue = async () => {
     try {
-      const res = await fetch('/api/queue/live');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.tickets) {
-          setLiveQueue(data.tickets);
-        }
+      const data = await fetchApi<{ tickets: QueueTicket[] }>('/queue/live');
+      if (data && data.tickets && Array.isArray(data.tickets)) {
+        setLiveQueue(data.tickets);
       }
     } catch (e) {
-      console.error('Failed to refresh queue via REST API:', e);
+      console.error('Failed to refresh queue:', e);
     }
   };
 
   useEffect(() => {
     refreshQueue();
 
-    // Setup HTTP REST polling interval fallback (every 4 seconds)
+    // Setup periodic refresh (every 3 seconds)
     const pollInterval = setInterval(() => {
       refreshQueue();
-    }, 4000);
+    }, 3000);
 
-    // Try Socket.IO connection
-    const socketClient = io(window.location.origin, {
-      transports: ['websocket', 'polling'],
-      reconnectionAttempts: 3,
-    });
+    // Socket.IO attempt
+    let socketClient: Socket | null = null;
+    try {
+      socketClient = io(window.location.origin, {
+        transports: ['websocket', 'polling'],
+        reconnectionAttempts: 2,
+        timeout: 3000,
+      });
 
-    socketClient.on('connect', () => {
-      setIsConnected(true);
-    });
+      socketClient.on('connect', () => {
+        setIsConnected(true);
+      });
 
-    socketClient.on('disconnect', () => {
-      setIsConnected(false);
-    });
+      socketClient.on('disconnect', () => {
+        setIsConnected(false);
+      });
 
-    socketClient.on('queue:updated', (data: QueueTicket[]) => {
-      if (data && Array.isArray(data)) {
-        setLiveQueue(data);
-      }
-    });
+      socketClient.on('queue:updated', (data: QueueTicket[]) => {
+        if (data && Array.isArray(data)) {
+          setLiveQueue(data);
+        }
+      });
 
-    socketClient.on('ticket:called', (data: QueueTicket) => {
-      setLastCalledTicket(data);
-      if (data.room?.number) {
-        announceQueueCall(data.ticketNumber, data.room.number, data.room.wing, language);
-      }
-      refreshQueue();
-    });
+      socketClient.on('ticket:called', (data: QueueTicket) => {
+        setLastCalledTicket(data);
+        if (data.room?.number) {
+          announceQueueCall(data.ticketNumber, data.room.number, data.room.wing, language);
+        }
+        refreshQueue();
+      });
 
-    setSocket(socketClient);
+      setSocket(socketClient);
+    } catch (err) {
+      console.warn('Socket connection skipped in client mode:', err);
+    }
 
     return () => {
       clearInterval(pollInterval);
-      socketClient.disconnect();
+      if (socketClient) socketClient.disconnect();
     };
   }, [language]);
 
